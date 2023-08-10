@@ -1,0 +1,46 @@
+{
+    "pythonWebREPL":{
+       "endpoint":"ws://192.168.4.1:8266",
+       "password":"cyobot"
+    },
+    "codeEditor":{
+       "loading":{
+          "progressIntervalMs":1000,
+          "progressIncrementValue":10,
+          "messageIntervalMs":3000,
+          "messages":[
+             "Hang on tight...",
+             "Almost there...",
+             "Patience is a virtue of all programmers",
+             "Sometimes taking a walk is the best debug strategy",
+             "Don't forget to drink water, programmers are human too",
+             "Have you touched grass today?"
+          ],
+          "onFinishLoadingMessage":"We're ready, have fun!",
+          "onFinishLoadingDelayMs":1000
+       }
+    },
+    "onboarding":{
+       "hasProvidedWifiCredentials":true,
+       "hasProvidedCodeEditorPreference":false,
+       "openPortalInstructionCards":[
+          {
+             "header":"1. Connect your laptop to wifi",
+             "content":"Use your navigation bar to connect your laptop to the same wifi network that CYOCrawler connected to previously."
+          },
+          {
+             "header":"2. Type CYOCrawler’s IP into a new browser",
+             "content":"Your Crawler will show a unique IP on its LED screen (e.g, 192.168.100.200). Type the IP shown into a new tab on your browser."
+          },
+          {
+             "header":"3. Finish!",
+             "content":"Now, your Crawler’s IP address has become your personal portal address. Next time, just type in this IP into your browser to connect to the portal while going online."
+          }
+       ]
+    },
+    "queryIndices":{
+       "useConfig":"useConfig",
+       "useNetworks":"useNetworks",
+       "useCyobrainInternetConnectionStatus":"useCyobrainInternetConnectionStatus"
+    }
+ }

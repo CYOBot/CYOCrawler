@@ -1,0 +1,1 @@
+The cyobot-os.bin is the MicroPython release that works with CYOBrain v2.0
