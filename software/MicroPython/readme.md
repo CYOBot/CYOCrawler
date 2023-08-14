@@ -38,7 +38,17 @@ cd pyboard
 rsync . /pyboard
 ```
 
-We will now turn on `webrepl` to be loaded on startup. Open `REPL` by typing into a terminal running `rshell` connected to CYOBrain
+Finally, hard reset your CYOBrain by either pressing the reset button at the top of the CYOBrain, or disconnect power source (unplug USB cable/switch off the board) and reconnect. If you see the LED matrix scrolling text "AP MODE", the board is now running OS with everything else setup. Connect your computer to the board via WiFi (find the access point name `CYOCrawler`), open browser and either type in `portal.cyobot.com` or `192.168.4.1` to load the portal and start coding.
+
+# Troubleshoot
+## WebREPL is not on
+The file `webrepl_cfg.py` with password information of WebREPL, and the following code in `boot.py` should be sufficient to turn on and configure WebREPL at startup:
+```python
+import webrepl
+webrepl.start()
+```
+
+However, if WebREPL is not turned on, go through the following steps to turn on `webrepl` to be loaded on startup. Open `REPL` by typing into a terminal running `rshell` connected to CYOBrain
 ```bash
 repl
 ```
@@ -49,5 +59,3 @@ import webrepl_setup
 Press `E` to enable webrepl on startup, and set `cyobot` as the password.
 
 **Note**: The portal will attempt to connect to CYOBrain via webrepl with the password `cyobot`, so if you set the password to be anything else, the connection will not be successfully established.
-
-Finally, hard reset your CYOBrain by either pressing the reset button at the top of the CYOBrain, or disconnect power source (unplug USB cable/switch off the board) and reconnect. If you see the LED matrix scrolling text "AP MODE", the board is now running OS with everything else setup. Connect your computer to the board via WiFi (find the access point name `CYOCrawler`), open browser and either type in `portal.cyobot.com` or `192.168.4.1` to load the portal and start coding.
