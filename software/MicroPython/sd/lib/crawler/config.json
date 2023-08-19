@@ -1,50 +1,50 @@
 {
   "leg0": {
     "upper": {
-      "pin": 1,
+      "pin": 4,
       "orientation": -1,
-      "offset": -6
+      "offset": 0
     },
     "lower": {
-      "pin": 0,
+      "pin": 5,
       "orientation": 1,
-      "offset": -7
+      "offset": 0
     }
   },
   "leg1": {
     "upper": {
-      "pin": 4,
+      "pin": 6,
       "orientation": -1,
-      "offset": -20
+      "offset": 0
     },
     "lower": {
-      "pin": 3,
+      "pin": 7,
       "orientation": 1,
-      "offset": 5
+      "offset": 0
     }
   },
   "leg2": {
     "upper": {
-      "pin": 7,
+      "pin": 11,
       "orientation": 1,
-      "offset": -9
+      "offset": 0
     },
     "lower": {
-      "pin": 6,
+      "pin": 10,
       "orientation": 1,
-      "offset": -20
+      "offset": 0
     }
   },
   "leg3": {
     "upper": {
-      "pin": 10,
+      "pin": 0,
       "orientation": 1,
-      "offset": -22
+      "offset": 0
     },
     "lower": {
-      "pin": 9,
+      "pin":1,
       "orientation": 1,
-      "offset": -8
+      "offset": 0
     }
   }
 }
