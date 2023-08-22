@@ -18,3 +18,6 @@ CYOCrawler is equipped with a wide range of capabilities to accompany you on you
 ![image](assets/CYOCrawler-different-stance.png)
 
 More examples, tutorials and projects using CYOCrawler/CYOBrain can be found on [CYOBot's project library](https://cyobot.projectcocoon.org/).
+
+# License
+![image](assets/oshw_facts.svg)
