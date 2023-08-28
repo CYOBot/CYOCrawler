@@ -4,7 +4,7 @@ import neopixel
 
 class LEDRing:
 	def __init__(self):
-		self.np = neopixel.NeoPixel(machine.Pin(26), 12)
+		self.np = neopixel.NeoPixel(machine.Pin(13), 12)
 
 	def reset(self):
 		for i in range(12):
