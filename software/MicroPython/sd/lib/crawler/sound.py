@@ -1,5 +1,6 @@
 import os
 import struct
+import math
 from machine import Pin, I2S, ADC
 
 class Microphone:
@@ -195,21 +196,76 @@ class WavPlayer:
         
 class Speaker:
     def __init__(self):
-        SCK_PIN = 25
-        WS_PIN = 26
-        SD_PIN = 14
-        I2S_ID = 0
-        BUFFER_LENGTH_IN_BYTES = 40000
+        self.SCK_PIN = 25
+        self.WS_PIN = 26
+        self.SD_PIN = 14
+        self.I2S_ID = 0
+        self.BUFFER_LENGTH_IN_BYTES = 40000
         self.wp = WavPlayer(
-            id=I2S_ID,
-            sck_pin=Pin(SCK_PIN),
-            ws_pin=Pin(WS_PIN),
-            sd_pin=Pin(SD_PIN),
-            ibuf=BUFFER_LENGTH_IN_BYTES,
+            id=self.I2S_ID,
+            sck_pin=Pin(self.SCK_PIN),
+            ws_pin=Pin(self.WS_PIN),
+            sd_pin=Pin(self.SD_PIN),
+            ibuf=self.BUFFER_LENGTH_IN_BYTES,
         )
     
-    def play(self, filename):
-        self.wp.play("test.mp3", loop=False)
+    def make_tone(self, rate, bits, frequency, volume=5):
+        # create a buffer containing the pure tone samples
+        samples_per_cycle = rate // frequency
+        sample_size_in_bytes = bits // 8
+        samples = bytearray(samples_per_cycle * sample_size_in_bytes)
+        # volume_reduction_factor = 32
+        # range = pow(2, bits) // 2 // volume_reduction_factor
+        max_range = (pow(2, bits) // 2)
+        range =  int((max_range / 5) * volume)
+
+        if bits == 16:
+            format = "<h"
+        else:  # assume 32 bits
+            format = "<l"
+
+        for i in range(samples_per_cycle):
+            sample = range + int((range - 1) * math.sin(2 * math.pi * i / samples_per_cycle))
+            struct.pack_into(format, samples, i * sample_size_in_bytes, sample)
+
+        return samples
+    
+    def play_tone(self, frequency=440, volume=5):
+        # ======= AUDIO CONFIGURATION =======
+        SAMPLE_SIZE_IN_BITS = 16
+        FORMAT = I2S.MONO  # only MONO supported in this example
+        SAMPLE_RATE_IN_HZ = 22_050
+        # ======= AUDIO CONFIGURATION =======
+
+        if volume > 5:
+            volume = 5
+            print("Warning, volume range is [0, 5]")
+        
+        samples = self.make_tone(SAMPLE_RATE_IN_HZ, SAMPLE_SIZE_IN_BITS, frequency=frequency, volume=volume)
+        audio_out = I2S(
+            self.I2S_ID,
+            sck=self.SCK_PIN,
+            ws=self.WS_PIN,
+            sd=self.SD_PIN,
+            mode=I2S.TX,
+            bits=SAMPLE_SIZE_IN_BITS,
+            format=FORMAT,
+            rate=SAMPLE_RATE_IN_HZ,
+            ibuf=self.BUFFER_LENGTH_IN_BYTES,
+        )
+
+        try:
+            while True:
+                num_written = audio_out.write(samples)
+
+        except (KeyboardInterrupt, Exception) as e:
+            print("caught exception {} {}".format(type(e).__name__, e))
+
+        # cleanup
+        audio_out.deinit()
+    
+    def play(self, filename="music-16k-16bits-mono.wav"):
+        self.wp.play(filename, loop=False)
 
         while self.wp.isplaying() == True:
             # do something else here
