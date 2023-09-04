@@ -36,6 +36,14 @@ last_wifi_ap_scan_time = time.time()
 matrix = Matrix()
 
 if wifi.wlan.isconnected():
+    file = open("/sd/portal/config.json").read()
+    content = json.loads(file)
+    content["pythonWebREPL"]["endpoint"] = "ws://{}:8266".format(wifi.wlan.ifconfig()[0])
+    content["onboarding"]["hasProvidedWifiCredentials"] = True
+    
+    with open("/sd/portal/config.json", "w") as outfile:
+        outfile.write(json.dumps(content))
+
     matrix.scroll(wifi.wlan.ifconfig()[0], speed=0.1, red=0, green=0, blue=80)
     # srv = MicroWebSrv(webPath='/sd/portal/', bindIP=wifi.wlan.ifconfig()[0])
 

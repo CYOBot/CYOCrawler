@@ -21,7 +21,7 @@
        }
     },
     "onboarding":{
-       "hasProvidedWifiCredentials":true,
+       "hasProvidedWifiCredentials":false,
        "hasProvidedCodeEditorPreference":false,
        "openPortalInstructionCards":[
           {
