@@ -21,6 +21,6 @@ CYOCrawler is equipped with a wide range of capabilities to accompany you on you
 More examples, tutorials and projects using CYOCrawler/CYOBrain can be found on [CYOBot's project library](https://cyobot.projectcocoon.org/).
 
 # License
-This product is open-source certified by OSHWA (US002433).
+This product is open-source certified by OSHWA ([US002433](https://certification.oshwa.org/us002433.html)).
 
 <img src="assets/certification-mark-US002433-stacked.svg" alt="drawing" height="100"/> <img src="assets/oshw_facts.svg" alt="drawing" height="100"/>
