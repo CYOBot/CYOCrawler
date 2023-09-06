@@ -1,4 +1,4 @@
-![image](assets/Horizontal%20Logo%20CYOBot-Color-RGB.png)
+<img src="assets/Horizontal%20Logo%20CYOBot-Color-RGB.png" alt="3-robot" width="500">
 
 # Introduction
 This is the official repository of CYOBOT LLC **CYOCrawler, an open-source quadrupedal robotic platform**. 
