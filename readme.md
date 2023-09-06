@@ -1,4 +1,5 @@
 ![image](assets/Horizontal%20Logo%20CYOBot-Color-RGB.png)
+
 # Introduction
 This is the official repository of CYOBOT LLC **CYOCrawler, an open-source quadrupedal robotic platform**. 
 
@@ -15,9 +16,11 @@ CYOCrawler is equipped with a wide range of capabilities to accompany you on you
 - USC C battery charger and smart charging/discharging system
 - Extension block with power, I2C, SPI, UART, GPIO
 
-![image](assets/CYOCrawler-different-stance.png)
+<img src="assets/CYOCrawler-different-stance.png" alt="3-robot" style="width: 600px; height: 200px; object-fit: cover;">
 
 More examples, tutorials and projects using CYOCrawler/CYOBrain can be found on [CYOBot's project library](https://cyobot.projectcocoon.org/).
 
 # License
-![image](assets/oshw_facts.svg)
+This product is open-source certified by OSHWA (US002433).
+
+<img src="assets/certification-mark-US002433-stacked.svg" alt="drawing" height="100"/> <img src="assets/oshw_facts.svg" alt="drawing" height="100"/>
