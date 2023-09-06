@@ -16,7 +16,7 @@ CYOCrawler is equipped with a wide range of capabilities to accompany you on you
 - USC C battery charger and smart charging/discharging system
 - Extension block with power, I2C, SPI, UART, GPIO
 
-<img src="assets/CYOCrawler-different-stance.png" alt="3-robot" style="width: 600px; height: 200px; object-fit: cover;">
+<img src="assets/CYOCrawler-different-stance.png" alt="3-robot" height="200">
 
 More examples, tutorials and projects using CYOCrawler/CYOBrain can be found on [CYOBot's project library](https://cyobot.projectcocoon.org/).
 
