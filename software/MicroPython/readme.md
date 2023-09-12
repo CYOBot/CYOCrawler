@@ -8,6 +8,10 @@ The repo includes source code for onboard peripherals, including:
 * * Portal for coding interface and WiFi setup
 
 # Installation
+## Windows
+For Windows, **esptool** and **rshell** work on top of a Conda environment. An `install.ps1` file is included to help with the process.
+
+## Ubuntu
 The `cyobot-os.bin` is the MicroPython release that works with CYOBrain v2.0
 
 To burn the CYOBrain, install `esptool.py` to your computer, and run the following commands:
