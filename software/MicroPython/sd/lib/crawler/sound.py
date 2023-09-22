@@ -1,6 +1,7 @@
 import os
 import struct
 import math
+import time
 from machine import Pin, I2S, ADC
 
 class Microphone:
@@ -65,7 +66,7 @@ class WavPlayer:
         self.silence_samples = bytearray(self.sbuf)
 
         # allocate audio sample array buffer
-        self.wav_samples_mv = memoryview(bytearray(10000))
+        self.wav_samples_mv = memoryview(bytearray(3200))
 
     def i2s_callback(self, arg):
         if self.state == WavPlayer.PLAY:
@@ -200,7 +201,7 @@ class Speaker:
         self.WS_PIN = 26
         self.SD_PIN = 14
         self.I2S_ID = 0
-        self.BUFFER_LENGTH_IN_BYTES = 40000
+        self.BUFFER_LENGTH_IN_BYTES = 3200
         self.wp = WavPlayer(
             id=self.I2S_ID,
             sck_pin=Pin(self.SCK_PIN),
@@ -230,7 +231,7 @@ class Speaker:
 
         return samples
     
-    def play_tone(self, frequency=440, volume=5):
+    def play_tone(self, frequency=440, volume=5, duration=1):
         # ======= AUDIO CONFIGURATION =======
         SAMPLE_SIZE_IN_BITS = 16
         FORMAT = I2S.MONO  # only MONO supported in this example
@@ -255,7 +256,8 @@ class Speaker:
         )
 
         try:
-            while True:
+            cur_time = time.time()
+            while time.time() - cur_time < duration:
                 num_written = audio_out.write(samples)
 
         except (KeyboardInterrupt, Exception) as e:
