@@ -43,9 +43,14 @@ if wifi.wlan.isconnected():
     
     with open("/sd/portal/config.json", "w") as outfile:
         outfile.write(json.dumps(content))
-
-    matrix.scroll(wifi.wlan.ifconfig()[0], speed=0.1, red=0, green=0, blue=80)
-    # srv = MicroWebSrv(webPath='/sd/portal/', bindIP=wifi.wlan.ifconfig()[0])
+else:
+    file = open("/sd/portal/config.json").read()
+    content = json.loads(file)
+    content["pythonWebREPL"]["endpoint"] = "ws://192.168.4.1:8266"
+    content["onboarding"]["hasProvidedWifiCredentials"] = False
+    
+    with open("/sd/portal/config.json", "w") as outfile:
+        outfile.write(json.dumps(content))
 
 ssid = 'CYOCrawler'
 
