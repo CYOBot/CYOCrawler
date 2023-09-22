@@ -7,6 +7,14 @@ class Matrix:
 	def set_manual(self, index, data):
 		self.np[index] = data
 		self.np.write()
+	
+	def set_custom(self, indices, color):
+		for i in range(33):
+			if i in indices:
+				self.np[i] = color
+			else:
+				self.np[i] = (0, 0, 0)
+		self.np.write()
 
 	def set_pixel(self, pixel):
 		self.np[pixel.index] = pixel.get_color()
