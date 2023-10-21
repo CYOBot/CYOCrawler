@@ -1,3 +1,13 @@
+from lib.crawler.display import *
+import time
+
+ring = LEDRing()
+ring.reset()
+for i in range(12):
+    ring.set_manual(i, (0, 100, 0))
+    time.sleep(0.05)
+ring.reset()
+
 import usocket as socket
 import network
 from lib.network.microWebSrv import MicroWebSrv
@@ -5,9 +15,10 @@ from lib.brain.wireless import *
 from lib.brain.display import *
 import json
 import webrepl
-import time
 
+matrix = Matrix()
 wifi = WiFi()
+
 try:
     file = open("/sd/lib/brain/config.json").read()
     content = json.loads(file)
@@ -32,8 +43,6 @@ def getWiFiAPList():
 
 last_wifi_ap_list = getWiFiAPList()
 last_wifi_ap_scan_time = time.time()
-
-matrix = Matrix()
 
 if wifi.wlan.isconnected():
     file = open("/sd/portal/config.json").read()
