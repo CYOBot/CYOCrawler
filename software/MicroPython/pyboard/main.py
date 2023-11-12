@@ -8,7 +8,6 @@ for i in range(12):
     time.sleep(0.05)
 ring.reset()
 
-import usocket as socket
 import network
 from lib.network.microWebSrv import MicroWebSrv
 from lib.brain.wireless import *
@@ -153,3 +152,7 @@ if wifi.wlan.isconnected():
 #     while webrepl.client_s is None:
 #         matrix.scroll(".", speed=0.1, red=0, green=0, blue=80)
 #         time.sleep(1.0)
+
+import gc
+gc.mem_free()
+gc.mem_alloc()
