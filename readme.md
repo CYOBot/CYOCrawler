@@ -18,9 +18,20 @@ CYOCrawler is equipped with a wide range of capabilities to accompany you on you
 
 <img src="assets/CYOCrawler-different-stance-cropped.png" alt="3-robot" width="500">
 
-More examples, tutorials and projects using CYOCrawler/CYOBrain can be found on [CYOBot's project library](https://cyobot.projectcocoon.org/).
+<!-- More examples, tutorials and projects using CYOCrawler/CYOBrain can be found through [CYOBot's project library](https://cyobot.projectcocoon.org/) -->
+
+More examples, tutorials and projects using CYOCrawler/CYOBrain can be found through [CYOBot's project library](https://cyobot.notion.site/a845040ff7484627a544b4d025d32f9d?v=201e9cd408014c6cad27ed2f8226b786&pvs=4)
+
+Every week we publish a new challenge to our community at [r/CYOBot](https://www.reddit.com/r/CYOBot/). Join our Reddit community to participate in challenges and earn yourself a contribution on this repo. Refer to [Challenge](/challenges/readme.md) for more information.
 
 # License
 This product is open-source certified by OSHWA ([US002433](https://certification.oshwa.org/us002433.html)).
 
 <img src="assets/certification-mark-US002433-stacked.svg" alt="drawing" height="100"/> <img src="assets/oshw_facts.svg" alt="drawing" height="100"/>
+
+# Community
+Follow us on social media and join the community!
+
+[<img src="assets/reddit-logo.png" height="40">](https://www.reddit.com/r/CYOBot/)&nbsp;&nbsp;
+[<img src="assets/linkedin-logo.png" height="40">](https://www.linkedin.com/company/cyobot)&nbsp;&nbsp;
+[<img src="assets/instagram-logo.png" height="40">](https://www.instagram.com/cyo.bot/)&nbsp;&nbsp;
