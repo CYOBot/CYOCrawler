@@ -5,4 +5,5 @@ The official repository and directory for all weekly challenge of CYOBot using C
 To get started, fork the repo, write your solution in the respective challenge solution folder, submit your video/gif of working solution on Reddit together with your Github solution link.
 
 List of all weekly challenges as of today:
-1. [Flappy bird](flappy-bird/flappy-bird.md) (**in progress**)
+1. [Flappy Bird](flappy-bird/flappy-bird.md) (**in progress**)
+2. [Dice rolling](dice-rolling/dice-rolling.md) (**in progress**)
