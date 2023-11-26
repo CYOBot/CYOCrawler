@@ -1,8 +1,43 @@
 from lib.crawler.display import *
 import time
 
+# check to see if button is pressed down
+left = machine.Pin(27, machine.Pin.IN)
+
 ring = LEDRing()
 ring.reset()
+
+if left.value() == 0:
+    for i in range(12):
+        ring.set_manual(i, (100, 0, 0))
+        time.sleep(0.05)
+    
+    # enter factory reset mode
+    cur_time = time.time()
+
+    from lib.brain.display import *
+    matrix = Matrix()
+    matrix.reset()
+    while time.time() - cur_time < 3:
+        if left.value() != 0:
+            machine.reset()
+    
+    matrix.scroll("RESET", blue=100, speed=0.05)
+    # run factory reset
+    import json
+    ## fix portal config file
+    file = open("/sd/portal/config.json").read()
+    content = json.loads(file)
+    content["pythonWebREPL"]["endpoint"] = "ws://192.168.4.1:8266"
+    content["onboarding"]["hasProvidedWifiCredentials"] = False
+    
+    with open("/sd/portal/config.json", "w") as outfile:
+        outfile.write(json.dumps(content))
+    
+    ## fix brain config file
+    with open("/sd/lib/brain/config.json", "w") as outfile:
+        outfile.write(json.dumps({}))
+
 for i in range(12):
     ring.set_manual(i, (0, 100, 0))
     time.sleep(0.05)
@@ -60,7 +95,7 @@ else:
     with open("/sd/portal/config.json", "w") as outfile:
         outfile.write(json.dumps(content))
 
-ssid = 'CYOCrawler'
+ssid = 'CYOBot'
 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
