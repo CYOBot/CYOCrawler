@@ -24,6 +24,9 @@ More examples, tutorials and projects using CYOCrawler/CYOBrain can be found thr
 
 Every week we publish a new challenge to our community at [r/CYOBot](https://www.reddit.com/r/CYOBot/). Join our Reddit community to participate in challenges and earn yourself a contribution on this repo. Refer to [Challenge](/challenges/readme.md) for more information.
 
+# Technical Specification
+<img src="assets/technical-specs-cyocrawler.png" alt="drawing" width="400">
+
 # License
 This product is open-source certified by OSHWA ([US002433](https://certification.oshwa.org/us002433.html)).
 
