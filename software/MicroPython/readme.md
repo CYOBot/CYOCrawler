@@ -42,6 +42,11 @@ cd pyboard
 rsync . /pyboard
 ```
 
+Connecting to board and copying all files to board can be shorten to a single command:
+```bash
+rshell -p <PORT> -b 115200 rsync . /pyboard/
+```
+
 Finally, hard reset your CYOBrain by either pressing the reset button at the top of the CYOBrain, or disconnect power source (unplug USB cable/switch off the board) and reconnect. If you see the LED matrix scrolling text "AP MODE", the board is now running OS with everything else setup. Connect your computer to the board via WiFi (find the access point name `CYOCrawler`), open browser and either type in `portal.cyobot.com` or `192.168.4.1` to load the portal and start coding.
 
 # Troubleshoot

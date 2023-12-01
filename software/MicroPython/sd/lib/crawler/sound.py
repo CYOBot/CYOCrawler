@@ -66,7 +66,7 @@ class WavPlayer:
         self.silence_samples = bytearray(self.sbuf)
 
         # allocate audio sample array buffer
-        self.wav_samples_mv = memoryview(bytearray(3200))
+        self.wav_samples_mv = memoryview(bytearray(2400))
 
     def i2s_callback(self, arg):
         if self.state == WavPlayer.PLAY:
@@ -201,7 +201,7 @@ class Speaker:
         self.WS_PIN = 26
         self.SD_PIN = 14
         self.I2S_ID = 0
-        self.BUFFER_LENGTH_IN_BYTES = 3200
+        self.BUFFER_LENGTH_IN_BYTES = 2400
         self.wp = WavPlayer(
             id=self.I2S_ID,
             sck_pin=Pin(self.SCK_PIN),

@@ -174,14 +174,13 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
 
 srv = MicroWebSrv(webPath='/sd/portal/')
 
-if not wifi.wlan.isconnected():
+# if not wifi.wlan.isconnected():
     # matrix.scroll("AP MODE", speed=0.05, red=0, green=0, blue=80)
-    matrix.set_manual(16, (100, 0, 100))
 
 srv.Start(threaded=True)
 
+import webrepl
 if wifi.wlan.isconnected():
-    import webrepl
     ip_address = wifi.wlan.ifconfig()[0]
     character_list = [char for char in ip_address]
     offset_list = [(-7*i) for i in range(len(character_list))]
@@ -212,6 +211,20 @@ if wifi.wlan.isconnected():
                 if offset_list[i] <= 6 and offset_list[i] >=-6:
                     matrix.set_character(character_list[i], offset = offset_list[i] // 1, multiplex = True, blue = 100)
             matrix.np.write()
+        else:
+            time.sleep(1.0)
+else:
+    on=True
+    while webrepl.client_s is None:
+        if on:
+            matrix.reset()
+            on = False
+        else:
+            matrix.set_manual(16, (100, 0, 100))
+            on = True
+        time.sleep(1.0)
+
+matrix.reset()
 
 import gc
 gc.mem_free()
