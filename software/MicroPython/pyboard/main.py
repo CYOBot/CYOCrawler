@@ -3,6 +3,7 @@ import time
 
 # check to see if button is pressed down
 left = machine.Pin(27, machine.Pin.IN)
+right = machine.Pin(0, machine.Pin.IN)
 
 ring = LEDRing()
 ring.reset()
@@ -174,19 +175,43 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
 srv = MicroWebSrv(webPath='/sd/portal/')
 
 if not wifi.wlan.isconnected():
-    matrix.scroll("AP MODE", speed=0.05, red=0, green=0, blue=80)
+    # matrix.scroll("AP MODE", speed=0.05, red=0, green=0, blue=80)
+    matrix.set_manual(16, (100, 0, 100))
 
 srv.Start(threaded=True)
 
 if wifi.wlan.isconnected():
     import webrepl
+    ip_address = wifi.wlan.ifconfig()[0]
+    character_list = [char for char in ip_address]
+    offset_list = [(-7*i) for i in range(len(character_list))]
+    
+    matrix.reset()
+    for i in range(len(character_list)):
+        if offset_list[i] <= 6 and offset_list[i] >=-6:
+            matrix.set_character(character_list[i], offset = offset_list[i] // 1, multiplex = True, blue = 100)
+    matrix.np.write()
+    
+    redraw = False
+    
     while webrepl.client_s is None:
-        matrix.scroll(wifi.wlan.ifconfig()[0], speed=0.1, red=0, green=0, blue=80)
-        time.sleep(2.0)
-# else:
-#     while webrepl.client_s is None:
-#         matrix.scroll(".", speed=0.1, red=0, green=0, blue=80)
-#         time.sleep(1.0)
+        redraw = False
+
+        if left.value() == 0 and right.value() != 0:
+            for i in range(len(offset_list)):
+                offset_list.append(offset_list.pop(0) + 0.1)
+            redraw = True
+        elif right.value() == 0 and left.value() != 0:
+            for i in range(len(offset_list)):
+                offset_list.append(offset_list.pop(0) - 0.1)
+            redraw = True
+        
+        if redraw:
+            matrix.reset()
+            for i in range(len(character_list)):
+                if offset_list[i] <= 6 and offset_list[i] >=-6:
+                    matrix.set_character(character_list[i], offset = offset_list[i] // 1, multiplex = True, blue = 100)
+            matrix.np.write()
 
 import gc
 gc.mem_free()
