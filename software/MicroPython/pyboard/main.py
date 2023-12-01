@@ -1,4 +1,5 @@
 from lib.crawler.display import *
+from lib.brain.display import *
 import time
 
 # check to see if button is pressed down
@@ -6,7 +7,9 @@ left = machine.Pin(27, machine.Pin.IN)
 right = machine.Pin(0, machine.Pin.IN)
 
 ring = LEDRing()
+matrix = Matrix()
 ring.reset()
+matrix.reset()
 
 if left.value() == 0:
     for i in range(12):
@@ -17,7 +20,6 @@ if left.value() == 0:
     cur_time = time.time()
 
     from lib.brain.display import *
-    matrix = Matrix()
     matrix.reset()
     while time.time() - cur_time < 3:
         if left.value() != 0:
@@ -47,11 +49,9 @@ ring.reset()
 import network
 from lib.network.microWebSrv import MicroWebSrv
 from lib.brain.wireless import *
-from lib.brain.display import *
 import json
 import webrepl
 
-matrix = Matrix()
 wifi = WiFi()
 
 try:
@@ -80,6 +80,14 @@ last_wifi_ap_list = getWiFiAPList()
 last_wifi_ap_scan_time = time.time()
 
 if wifi.wlan.isconnected():
+    from lib.crawler.sound import Speaker
+    speaker = Speaker()
+    time.sleep(1.0)
+    ring.loading(blue=100)
+    speaker.play_tone(frequency=3500, duration=0.1, volume=1)
+    time.sleep(0.01)
+    speaker.play_tone(frequency=3500, duration=0.1, volume=1)
+
     file = open("/sd/portal/config.json").read()
     content = json.loads(file)
     content["pythonWebREPL"]["endpoint"] = "ws://{}:8266".format(wifi.wlan.ifconfig()[0])

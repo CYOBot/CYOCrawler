@@ -256,8 +256,8 @@ class Speaker:
         )
 
         try:
-            cur_time = time.time()
-            while time.time() - cur_time < duration:
+            cur_time = time.ticks_ms()
+            while time.ticks_ms() - cur_time < (duration * 1000):
                 num_written = audio_out.write(samples)
 
         except (KeyboardInterrupt, Exception) as e:
