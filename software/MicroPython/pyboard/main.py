@@ -57,7 +57,7 @@ wifi = WiFi()
 try:
     file = open("/sd/lib/brain/config.json").read()
     content = json.loads(file)
-    wifi.connect(content["ssid"], content["password"])
+    wifi.connect(content["ssid"], content["password"], verbose=True)
 except:
     pass
 
@@ -72,21 +72,65 @@ def getWiFiAPList():
         else:
             return 3
     
-    ap_list = wifi.wlan.scan()
+    try:
+        ap_list = wifi.wlan.scan()
+    except:
+        try:
+            ap_list = ap.scan()
+        except:
+            pass
     content = [{"ssid": x[0].decode('ascii'), "strength": signal_strength(x[3])} for x in ap_list]
     return content
 
 last_wifi_ap_list = getWiFiAPList()
 last_wifi_ap_scan_time = time.time()
 
+"""
+for i in range(12):
+    self.np[i] = (red, green, blue)
+    self.np.write()
+    time.sleep(speed)
+for i in range(12):
+    self.np[i] = (0, 0, 0)
+    self.np.write()
+    time.sleep(speed)
+"""
+
 if wifi.wlan.isconnected():
     from lib.crawler.sound import Speaker
     speaker = Speaker()
-    time.sleep(1.0)
-    ring.loading(blue=100)
-    speaker.play_tone(frequency=3500, duration=0.1, volume=1)
+    ring.np[0] = (0, 100, 0)
+    ring.np.write()
+    ring.np[1] = (0, 100, 0)
+    ring.np.write()
+    speaker.play_tone(frequency=261, duration=0.2, volume=2)
     time.sleep(0.01)
-    speaker.play_tone(frequency=3500, duration=0.1, volume=1)
+    ring.np[2] = (0, 100, 0)
+    ring.np.write()
+    ring.np[3] = (0, 100, 0)
+    ring.np.write()
+    speaker.play_tone(frequency=392, duration=0.2, volume=2)
+    time.sleep(0.01)
+    ring.np[4] = (0, 100, 0)
+    ring.np.write()
+    ring.np[5] = (0, 100, 0)
+    ring.np.write()
+    speaker.play_tone(frequency=659, duration=0.2, volume=2)
+    time.sleep(0.01)
+    ring.np[6] = (0, 100, 0)
+    ring.np.write()
+    ring.np[7] = (0, 100, 0)
+    ring.np.write()
+    speaker.play_tone(frequency=1047, duration=0.2, volume=2)
+    time.sleep(0.01)
+    for i in range(8, 12):
+        ring.np[i] = (0, 100, 0)
+        ring.np.write()
+        time.sleep(0.1)
+    for i in range(12):
+        ring.np[i] = (0, 0, 0)
+        ring.np.write()
+        time.sleep(0.1)
 
     file = open("/sd/portal/config.json").read()
     content = json.loads(file)
@@ -152,7 +196,7 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
     # if not, do not need to update
     # return "success" or "fail" to client
     data = httpClient.ReadRequestContentAsJSON()
-    wifi.connect(data["ssid"], data["password"])
+    wifi.connect(data["ssid"], data["password"], verbose=True)
 
     #! TODO: also store this credential in INTERNAL config so that we can connect in the future auto
     if wifi.wlan.isconnected():
@@ -204,11 +248,11 @@ if wifi.wlan.isconnected():
     while webrepl.client_s is None:
         redraw = False
 
-        if left.value() == 0 and right.value() != 0:
+        if left.value() != 0 and right.value() == 0:
             for i in range(len(offset_list)):
                 offset_list.append(offset_list.pop(0) + 0.1)
             redraw = True
-        elif right.value() == 0 and left.value() != 0:
+        elif right.value() != 0 and left.value() == 0:
             for i in range(len(offset_list)):
                 offset_list.append(offset_list.pop(0) - 0.1)
             redraw = True
