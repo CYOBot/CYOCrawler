@@ -8,3 +8,4 @@ List of all weekly challenges as of today:
 1. [Flappy Bird](flappy-bird/flappy-bird.md) (**in progress**)
 2. [Dice rolling](dice-rolling/dice-rolling.md) (**in progress**)
 3. [Pomodoro timer](pomodoro/pomodoro.md) (**in progress**)
+4. [LED chasing game](led-chasing/led-chasing.md) (**in progress**)
