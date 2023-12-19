@@ -46,6 +46,12 @@ for i in range(12):
     time.sleep(0.05)
 ring.reset()
 
+try:
+    del file
+    del outfile
+except:
+    pass
+
 import network
 from lib.network.microWebSrv import MicroWebSrv
 from lib.brain.wireless import *
@@ -58,6 +64,7 @@ try:
     file = open("/sd/lib/brain/config.json").read()
     content = json.loads(file)
     wifi.connect(content["ssid"], content["password"], verbose=True)
+    del file
 except:
     pass
 
@@ -136,17 +143,21 @@ if wifi.wlan.isconnected():
     content = json.loads(file)
     content["pythonWebREPL"]["endpoint"] = "ws://{}:8266".format(wifi.wlan.ifconfig()[0])
     content["onboarding"]["hasProvidedWifiCredentials"] = True
+    del file
     
     with open("/sd/portal/config.json", "w") as outfile:
         outfile.write(json.dumps(content))
+    del outfile
 else:
     file = open("/sd/portal/config.json").read()
     content = json.loads(file)
     content["pythonWebREPL"]["endpoint"] = "ws://192.168.4.1:8266"
     content["onboarding"]["hasProvidedWifiCredentials"] = False
+    del file
     
     with open("/sd/portal/config.json", "w") as outfile:
         outfile.write(json.dumps(content))
+    del outfile
 
 ssid = 'CYOBot'
 
@@ -170,14 +181,26 @@ if not wifi.wlan.isconnected():
 # handle request from portal
 @MicroWebSrv.route('/api/config')
 def _httpHandlerGetConfig(httpClient, httpResponse):
-    httpResponse.WriteResponseFile("/sd/portal/config.json", contentType="application/json", headers=None)
+    httpResponse.WriteResponseFile("/sd/portal/config.json", contentType="application/json", headers={
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*'
+    })
 
 @MicroWebSrv.route('/api/internet')
 def _httpHandlerGetWiFiConnectivity(httpClient, httpResponse):
     if wifi.wlan.isconnected():
-        httpResponse.WriteResponseJSONOk(obj=json.loads('{"status": "connected"}'), headers=None)
+        httpResponse.WriteResponseJSONOk(obj=json.loads('{"status": "connected"}'), headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
     else:
-        httpResponse.WriteResponseJSONOk(obj=json.loads('{"status": "disconnected"}'), headers=None)
+        httpResponse.WriteResponseJSONOk(obj=json.loads('{"status": "disconnected"}'), headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
 
 @MicroWebSrv.route('/api/wifi')
 def _httpHandlerGetWiFi(httpClient, httpResponse):
@@ -186,7 +209,19 @@ def _httpHandlerGetWiFi(httpClient, httpResponse):
     if time.time() - last_wifi_ap_scan_time > 10:
         last_wifi_ap_list = getWiFiAPList()
         last_wifi_ap_scan_time = time.time()
-    httpResponse.WriteResponseJSONOk(obj=last_wifi_ap_list, headers=None)
+    httpResponse.WriteResponseJSONOk(obj=last_wifi_ap_list, headers={
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*'
+    })
+
+@MicroWebSrv.route('/api/wifi', method='OPTIONS')
+def _httpHandlerOptionWiFiCredential(httpClient, httpResponse):
+    httpResponse.WriteResponseOk(headers={
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*'
+    })
 
 @MicroWebSrv.route('/api/wifi', 'POST')
 def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
@@ -204,25 +239,73 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
         content = json.loads(file)
         content["pythonWebREPL"]["endpoint"] = "ws://{}:8266".format(wifi.wlan.ifconfig()[0])
         content["onboarding"]["hasProvidedWifiCredentials"] = True
+        del file
         
         with open("/sd/portal/config.json", "w") as outfile:
             outfile.write(json.dumps(content))
+        del outfile
 
         file = open("/sd/lib/brain/config.json").read()
         content = json.loads(file)
         content["ssid"] = data["ssid"]
         content["password"] = data["password"]
+        del file
 
         with open("/sd/lib/brain/config.json", "w") as outfile:
             outfile.write(json.dumps(content))
+        del outfile
 
-        httpResponse.WriteResponseJSONOk(obj=json.dumps("success"), headers=None)
+        httpResponse.WriteResponseJSONOk(obj=json.dumps("success"), headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
     else:
-        httpResponse.WriteResponseJSONOk(obj=json.dumps("fail"), headers=None)
+        httpResponse.WriteResponseJSONOk(obj=json.dumps("fail"), headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
     
     time.sleep(1)
     import machine
     machine.reset()
+
+# @MicroWebSrv.route('/api/config', method='OPTIONS')
+# def _httpHandlerOptionConfig(httpClient, httpResponse):
+#     httpResponse.WriteResponseOk(headers={
+#         'Access-Control-Allow-Origin': '*',
+#         'Access-Control-Allow-Methods': '*',
+#         'Access-Control-Allow-Headers': '*'
+#     })
+
+@MicroWebSrv.route('/api/config', 'POST')
+def _httpHandlerPostConfig(httpClient, httpResponse):
+    data = httpClient.ReadRequestContentAsJSON()
+    print(data)
+    
+    try:
+        file = open("/sd/portal/config.json").read()
+        content = json.loads(file)
+        content["pythonWebREPL"]["endpoint"] = data["wsEndpoint"]
+        del file
+        
+        with open("/sd/portal/config.json", "w") as outfile:
+            outfile.write(json.dumps(content))
+        del outfile
+        
+        httpResponse.WriteResponseOk(headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
+    except Exception as e:
+        print(e)
+        httpResponse.WriteReponseError(500, headers={
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
 
 srv = MicroWebSrv(webPath='/sd/portal/')
 
