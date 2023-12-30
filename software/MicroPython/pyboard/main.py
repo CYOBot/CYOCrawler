@@ -231,7 +231,12 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
     # if not, do not need to update
     # return "success" or "fail" to client
     data = httpClient.ReadRequestContentAsJSON()
-    wifi.connect(data["ssid"], data["password"], verbose=True)
+
+    # try 4 times (5 seconds/time)
+    for i in range(4):
+        wifi.connect(data["ssid"], data["password"], verbose=True)
+        if wifi.wlan.isconnected():
+            break
 
     #! TODO: also store this credential in INTERNAL config so that we can connect in the future auto
     if wifi.wlan.isconnected():
@@ -260,16 +265,17 @@ def _httpHandlerPostWiFiCredential(httpClient, httpResponse):
             'Access-Control-Allow-Methods': '*',
             'Access-Control-Allow-Headers': '*'
         })
+        
+        time.sleep(2)
+        import machine
+        machine.reset()
+
     else:
         httpResponse.WriteResponseJSONOk(obj=json.dumps("fail"), headers={
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': '*',
             'Access-Control-Allow-Headers': '*'
         })
-    
-    time.sleep(1)
-    import machine
-    machine.reset()
 
 # @MicroWebSrv.route('/api/config', method='OPTIONS')
 # def _httpHandlerOptionConfig(httpClient, httpResponse):

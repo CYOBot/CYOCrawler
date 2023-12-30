@@ -12,6 +12,12 @@ class WiFi:
 		if password == "":
 			print("Please input password")
 			return
+
+		try:
+			# ensure that if the new connection is wrong, it is wrong (not showing Connected anymore)
+			self.wlan.disconnect()
+		except Exception as e:
+			print(e)
 		self.wlan.connect(ssid, password)
 
 		print("Attempt to connect to {}".format(ssid))
@@ -20,7 +26,7 @@ class WiFi:
 			from .display import Matrix
 			matrix = Matrix()
 			on=False
-		while count < 20 and not self.wlan.isconnected():
+		while count < 5 and not self.wlan.isconnected():
 			if verbose:
 				if not on:
 					matrix.set_manual(16, (100, 0, 100))
@@ -37,6 +43,7 @@ class WiFi:
 
 		if not self.wlan.isconnected():
 			print("Connection timeout")
+			self.wlan.disconnect()
 			return
 
 		print("Connection status: {}".format(self.wlan.isconnected()))
