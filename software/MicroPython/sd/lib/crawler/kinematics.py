@@ -38,7 +38,8 @@ class Crawler:
         self.pca = PCA9685()
         if "config.json" in os.listdir("/sd/lib/crawler"):
             print("config file found, loading...")
-            config = json.load(open("/sd/lib/crawler/config.json"))
+            with open("/sd/lib/crawler/config.json") as file:
+                config = json.load(file)
             self.leg0 = Leg(self.pca, 
                 config["leg0"]["upper"]["pin"], config["leg0"]["lower"]["pin"],
                 config["leg0"]["upper"]["orientation"], config["leg0"]["lower"]["orientation"],
@@ -59,12 +60,13 @@ class Crawler:
                 config["leg3"]["upper"]["orientation"], config["leg3"]["lower"]["orientation"],
                 config["leg3"]["upper"]["offset"], config["leg3"]["lower"]["offset"]
             )
+            del config
         else:
             print("WARNING: no config file found for this CYOCrawler, use default setting. This can affect your CYOCrawler's performance. Please refer to the official tutorial to calibrate your CYOCrawler before using")
-            self.leg0 = Leg(self.pca, 1, 0, 1, 1, -10, 0)
-            self.leg1 = Leg(self.pca, 4, 3, 1, 1, 0, 5)
-            self.leg2 = Leg(self.pca, 7, 6, -1, 1, 7, -9)
-            self.leg3 = Leg(self.pca, 10, 9, -1, 1, 4, 6)
+            self.leg0 = Leg(self.pca, 4, 5, -1, 1, 0, 0)
+            self.leg1 = Leg(self.pca, 6, 7, -1, 1, 0, 0)
+            self.leg2 = Leg(self.pca, 11, 10, 1, 1, 0, 0)
+            self.leg3 = Leg(self.pca, 0, 1, 1, 1, 0, 0)
         self.DELAY_TIME = 0.002
 
     def updateServoState(self):
@@ -150,59 +152,14 @@ class Crawler:
             self.leg3.centerOffsetUpper + self.leg3.upperOrientationWRTHead * leg3NewUpper, self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * leg3NewLower
         )
 
-    def fourPhaseGaitPropagation(self, gait):
+    def twoPhaseGaitPropagation(self, gait, order=[1.0, 1.0, 1.0, 1.0]):
         for i in range(4):
             self.dynamicServoAssignment(
-                self.leg0.centerOffsetUpper + self.leg0.upperOrientationWRTHead * gait[i*2+0], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[i*2+1],
-                self.leg1.centerOffsetUpper + self.leg1.upperOrientationWRTHead * gait[((i+3)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+3)*2+1)%8],
-                self.leg2.centerOffsetUpper + self.leg2.upperOrientationWRTHead * gait[((i+1)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i+1)*2+1)%8],
-                self.leg3.centerOffsetUpper + self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
+              self.leg0.centerOffsetUpper + order[0]*self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
+              self.leg1.centerOffsetUpper + order[1]*self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
+              self.leg2.centerOffsetUpper + order[2]*self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
+              self.leg3.centerOffsetUpper + order[3]*self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
             )
-
-    def twoPhaseGaitPropagation(self, gait):
-        for i in range(4):
-            self.dynamicServoAssignment(
-              self.leg0.centerOffsetUpper + self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-              self.leg1.centerOffsetUpper + self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
-              self.leg2.centerOffsetUpper + self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-              self.leg3.centerOffsetUpper + self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
-            )
-
-    def twoPhaseSideWalk(self, gait, direction):
-        if direction == 0:
-            for i in range(4):
-                self.dynamicServoAssignment(
-                  self.leg0.centerOffsetUpper + self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg1.centerOffsetUpper - self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
-                  self.leg2.centerOffsetUpper + self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg3.centerOffsetUpper - self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
-                )
-        else:
-            for i in range(4):
-                self.dynamicServoAssignment(
-                  self.leg0.centerOffsetUpper - self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg1.centerOffsetUpper + self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
-                  self.leg2.centerOffsetUpper - self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg3.centerOffsetUpper + self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
-                )
-
-    def twoPhaseRotate(self, gait, direction):
-        if direction == 0:
-            for i in range(4):
-                self.dynamicServoAssignment(
-                  self.leg0.centerOffsetUpper + self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg1.centerOffsetUpper + self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
-                  self.leg2.centerOffsetUpper - self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg3.centerOffsetUpper - self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
-                )
-        else:
-            for i in range(4):
-                self.dynamicServoAssignment(
-                  self.leg0.centerOffsetUpper - self.leg0.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg0.centerOffsetLower + self.leg0.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg1.centerOffsetUpper - self.leg1.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg1.centerOffsetLower + self.leg1.lowerOrientationWRTHead * gait[((i+2)*2+1)%8],
-                  self.leg2.centerOffsetUpper + self.leg2.upperOrientationWRTHead * gait[((i)*2+0)%8], self.leg2.centerOffsetLower + self.leg2.lowerOrientationWRTHead * gait[((i)*2+1)%8],
-                  self.leg3.centerOffsetUpper + self.leg3.upperOrientationWRTHead * gait[((i+2)*2+0)%8], self.leg3.centerOffsetLower + self.leg3.lowerOrientationWRTHead * gait[((i+2)*2+1)%8]
-                )
 
     def stop(self):
         self.leg0.currentAngleUpper = self.leg0.centerOffsetUpper
@@ -214,6 +171,7 @@ class Crawler:
         self.leg3.currentAngleLower = self.leg3.centerOffsetLower
         self.leg3.currentAngleUpper = self.leg3.centerOffsetUpper
         self.updateServoState()
+        self.pca.all_off()
     
     def command(self, command):
         if command == "stop":
@@ -226,26 +184,13 @@ class Crawler:
             self.twoPhaseGaitPropagation([+20, -15, +20, +20, -30, +20, -30, -15])
         elif command == "rotate_left":
             ## TURN AROUND
-            self.twoPhaseRotate([-30, -30, -30, 0, +30, +20, +30, 0], 1)
+            self.twoPhaseGaitPropagation([-30, -30, -30, 0, +30, +20, +30, 0], order=[-1.0, -1.0, 1.0, 1.0])
         elif command == "rotate_right":
             ## TURN AROUND
-            self.twoPhaseRotate([-30, -30, -30, 0, +30, +20, +30, 0], 0)
+            self.twoPhaseGaitPropagation([-30, -30, -30, 0, +30, +20, +30, 0], order=[1.0, 1.0, -1.0, -1.0])
         elif command == "lateral_left":
             ## SIDE WALK LEFT
-            self.twoPhaseSideWalk([-30, -30, -30, 0, +30, +20, +30, 0], 1)
+            self.twoPhaseGaitPropagation([-30, -30, -30, 0, +30, +20, +30, 0], order=[-1.0, 1.0, -1.0, 1.0])
         elif command == "lateral_right":
             ## SIDE WALK RIGHT
-            self.twoPhaseSideWalk([-30, -30, -30, 0, +30, +20, +30, 0], 0)
-    
-    def humanRest(self):
-        self.pca.set_angle(0, 80)
-        self.pca.set_angle(9, -80)
-        self.pca.set_angle(3, 40)
-        self.pca.set_angle(6, -50)
-        self.pca.set_angle(1, 40)
-        self.pca.set_angle(4, 40)
-        self.pca.set_angle(7, 40)
-        self.pca.set_angle(10, 40)
-        time.sleep(2)
-        
-        self.pca.all_off()
+            self.twoPhaseGaitPropagation([-30, -30, -30, 0, +30, +20, +30, 0], order=[1.0, -1.0, 1.0, -1.0])
