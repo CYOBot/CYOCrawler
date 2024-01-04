@@ -367,6 +367,18 @@ else:
 
 matrix.reset()
 
+globals().pop("ring", None)
+globals().pop("LEDRing", None)
+globals().pop("matrix", None)
+globals().pop("Matrix", None)
+globals().pop("speaker", None)
+globals().pop("Speaker", None)
+globals().pop("left", None)
+globals().pop("right", None)
+globals().pop("content", None)
+globals().pop("webrepl", None)
+
 import gc
+gc.collect()
 gc.mem_free()
 gc.mem_alloc()

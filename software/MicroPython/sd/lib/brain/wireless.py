@@ -48,3 +48,10 @@ class WiFi:
 
 		print("Connection status: {}".format(self.wlan.isconnected()))
 		print("Connection info: {}".format(self.wlan.ifconfig()))
+
+		globals().pop("matrix", None)
+		globals().pop("Matrix", None)
+		import gc
+		gc.collect()
+		gc.mem_free()
+		gc.mem_alloc()
