@@ -13,3 +13,4 @@ List of all weekly challenges as of today:
 6. [IMU counter](imu-counter/imu-counter.md) (**in progress**)
 7. [Humanoid walking](humanoid-walking/humanoid-walking.md) (**in progress**)
 8. [Simple car chasing game](car-chasing-simple/car-chasing-simple.md) (**in progress**)
+9. [Hybrid walking](hybrid-walking/hybrid-walking.md) (**in progress**)
